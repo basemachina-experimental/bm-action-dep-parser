@@ -51,26 +51,7 @@ for (let i = 2; i < args.length; i++) {
 // 解析の実行
 analyzeActionDependencies(targetType, targetDir, entryPointPatterns)
     .then(result => {
-        // 結果をJSON文字列にフォーマット
-        let formattedResult: string;
-        if (targetType === 'action') {
-            formattedResult = formatJavaScriptActionDependencyAnalysisResult(
-                // 古い形式に変換
-                result.reduce((acc, item: any) => {
-                    acc[item.entrypoint] = item.dependencies;
-                    return acc;
-                }, {} as Record<string, string[]>)
-            );
-        } else {
-            formattedResult = formatViewDependencyAnalysisResult(
-                // 古い形式に変換
-                result.reduce((acc, item: any) => {
-                    acc[item.entrypoint] = item.dependencies;
-                    return acc;
-                }, {} as Record<string, { direct: string[], indirect: Record<string, string[]> }>)
-            );
-        }
-        console.log(formattedResult);
+        console.log(JSON.stringify(result, null, 2));
     })
     .catch(error => {
         console.error('エラーが発生しました:', error);

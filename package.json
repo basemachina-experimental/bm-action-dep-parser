@@ -10,8 +10,8 @@
     "scripts": {
         "build": "tsc",
         "prepublishOnly": "npm run build",
-        "analyze": "ts-node analyze-action-dependencies.ts",
-        "start": "ts-node analyze-action-dependencies.ts",
+        "analyze": "ts-node cli.ts",
+        "start": "ts-node cli.ts",
         "test": "jest",
         "test:e2e": "jest tests/e2e"
     },
