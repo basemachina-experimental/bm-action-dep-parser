@@ -94,57 +94,16 @@ export async function analyzeEntryPoints(
  * @param entryPointDependencies エントリーポイントごとの依存関係
  * @returns テキスト形式でフォーマットされた結果
  */
+/**
+ * エントリーポイント分析結果をJSON形式でフォーマット
+ * @param entryPointDependencies エントリーポイントごとの依存関係
+ * @returns JSON形式でフォーマットされた結果
+ */
 export function formatEntryPointResults(
   entryPointDependencies: Record<string, {
     direct: string[];
     indirect: Record<string, string[]>;
-  }>,
-  format: 'text' | 'json' = 'text'
+  }>
 ): string {
-  if (format === 'json') {
-    return JSON.stringify(entryPointDependencies, null, 2);
-  }
-  
-  let result = '';
-  
-  for (const [entryPoint, dependencies] of Object.entries(entryPointDependencies)) {
-    result += `\n## エントリーポイント: ${entryPoint}\n`;
-    
-    // 直接依存するアクション
-    result += '\n### 直接依存するアクション:\n';
-    if (dependencies.direct.length === 0) {
-      result += '- なし\n';
-    } else {
-      for (const action of dependencies.direct) {
-        result += `- ${action}\n`;
-      }
-    }
-    
-    // 間接依存するアクション
-    result += '\n### 間接依存するアクション:\n';
-    const indirectActions = new Map<string, string[]>();
-    
-    for (const [file, actions] of Object.entries(dependencies.indirect)) {
-      for (const action of actions) {
-        if (!indirectActions.has(action)) {
-          indirectActions.set(action, []);
-        }
-        indirectActions.get(action)!.push(file);
-      }
-    }
-    
-    if (indirectActions.size === 0) {
-      result += '- なし\n';
-    } else {
-      for (const [action, files] of indirectActions.entries()) {
-        result += `- ${action} (経由: ${files.join(', ')})\n`;
-      }
-    }
-    
-    // 依存関係パスの出力は不要
-    
-    result += '\n';
-  }
-  
-  return result;
+  return JSON.stringify(entryPointDependencies, null, 2);
 }

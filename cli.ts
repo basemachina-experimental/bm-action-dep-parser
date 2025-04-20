@@ -14,13 +14,12 @@ bm-action-dep-parser - BaseMachina アクション依存関係解析ツール
   bm-action-dep-parser <action|view> <directory> [options]
 
 オプション:
-  --format <text|json>            出力形式を指定 (デフォルト: text)
   --entry-point-patterns <patterns> エントリーポイントのパターンをカンマ区切りで指定 (デフォルト: pages/**/*.{tsx,jsx,ts,js})
   --help, -h                      ヘルプメッセージを表示
 
 例:
   bm-action-dep-parser action ./packages/actions/js
-  bm-action-dep-parser view ./packages/views --format json
+  bm-action-dep-parser view ./packages/views
   bm-action-dep-parser view ./packages/views --entry-point-patterns "pages/*.tsx,components/**/*.tsx"
 `);
     process.exit(0);
@@ -38,21 +37,13 @@ if (!targetType || !targetDir) {
 }
 
 // オプションの解析
-let format: 'text' | 'json' = 'text';
+// 常にJSON形式で出力
+const format: 'json' = 'json';
 let entryPointPatterns: string[] = ["pages/**/*.{tsx,jsx,ts,js}"];
 
 for (let i = 2; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--format' && i + 1 < args.length) {
-        const formatValue = args[i + 1];
-        if (formatValue === 'text' || formatValue === 'json') {
-            format = formatValue;
-        } else {
-            console.error('エラー: 出力形式は text または json を指定してください');
-            process.exit(1);
-        }
-        i++;
-    } else if (arg === '--entry-point-patterns' && i + 1 < args.length) {
+    if (arg === '--entry-point-patterns' && i + 1 < args.length) {
         entryPointPatterns = args[i + 1].split(',');
         i++;
     }
