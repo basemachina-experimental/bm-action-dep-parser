@@ -15,19 +15,9 @@ BaseMachina アクション依存関係解析ツール
 - 各ファイルごとに依存しているアクションの識別子をリストアップ
 - アクション呼び出し関数（`executeAction`, `useExecuteAction`, `useExecuteActionLazy`）を検出
 - 変数に格納されたアクション識別子も検出
-- テキスト形式またはJSON形式で結果を出力
+- JSON形式で結果を出力
 - **ビューのエントリーポイント分析**: ビューのエントリーポイントから直接・間接的に依存しているすべてのアクションを可視化（ビューは常にエントリーポイント分析モード）
 - **カスタムエントリーポイントパターン**: エントリーポイントを柔軟に指定可能（デフォルトは `pages/**/*.{tsx,jsx,ts,js}`）
-
-## インストール
-
-```bash
-# グローバルインストール
-npm install -g bm-action-dep-parser
-
-# ローカルインストール
-npm install --save-dev bm-action-dep-parser
-```
 
 ## 使用方法
 
