@@ -7,7 +7,7 @@ import { extractDependencies } from './dependency-extractor';
 /**
  * ファイル間の依存関係を表すグラフ
  */
-export class DependencyGraph {
+export class ViewDependencyGraph {
   // ファイル間の依存関係を表すグラフ（キー：ファイルパス、値：依存先ファイルパスのセット）
   private graph: Map<string, Set<string>> = new Map();
   

@@ -2,7 +2,7 @@ import { findFiles } from './lib/file-finder';
 import { analyzeFile } from './lib/code-analyzer';
 import { extractDependencies } from './lib/dependency-extractor';
 import { formatResults } from './lib/result-formatter';
-import { DependencyGraph } from './lib/dependency-graph-builder';
+import { ViewDependencyGraph } from './lib/dependency-graph-builder';
 import { analyzeEntryPoints, defaultEntryPointPatterns, formatEntryPointResults } from './lib/entry-point-analyzer';
 
 export type TargetType = 'action' | 'view';
@@ -74,7 +74,7 @@ async function main() {
       // コンソール出力を削除
       
       // 依存関係グラフの構築
-      const dependencyGraph = new DependencyGraph(targetDir);
+      const dependencyGraph = new ViewDependencyGraph(targetDir);
       for (const file of files) {
         await dependencyGraph.addFile(file);
       }

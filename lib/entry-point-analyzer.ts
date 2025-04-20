@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { glob } from 'glob';
-import { DependencyGraph } from './dependency-graph-builder';
+import { ViewDependencyGraph } from './dependency-graph-builder';
 
 export const defaultEntryPointPatterns = ["pages/**/*.{tsx,jsx,ts,js}"];
 
@@ -53,7 +53,7 @@ export async function findEntryPoints(viewsDir: string, entryPointPatterns: stri
  */
 export async function analyzeEntryPoints(
   viewsDir: string,
-  dependencyGraph: DependencyGraph,
+  dependencyGraph: ViewDependencyGraph,
   entryPointPatterns: string[] = defaultEntryPointPatterns
 ): Promise<Record<string, {
   direct: string[];
