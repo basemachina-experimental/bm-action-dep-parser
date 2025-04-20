@@ -11,7 +11,8 @@
     "declaration": true,
     "sourceMap": true,
     "rootDir": ".",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": [
     "**/*.ts",
