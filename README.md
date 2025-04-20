@@ -62,7 +62,3 @@ npx ts-node analyze-action-dependencies.ts view ./packages/views
 8. **lib/entry-point-analyzer.ts**: エントリーポイント解析モジュール
 
 TypeScriptのコンパイラAPIを使用してコードを解析し、アクション呼び出しを検出しています。エントリーポイント分析モードでは、ファイル間の依存関係も解析して、間接的なアクション依存関係も検出します。
-
-## ライセンス
-
-MIT
