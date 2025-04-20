@@ -9,6 +9,23 @@ BaseMachina アクション依存関係解析ツール
 
 このツールは、BaseMachinaのJavaScriptアクションとビューのコードを静的解析して、各ファイルがどのアクションに依存しているかを特定します。
 
+> **注意**: このプロジェクトは、ビューやJavaScriptアクションが構造化されたディレクトリに配置されていることを想定しています。例えば以下のようなディレクトリ構造を前提としています。
+> 必ずしもこちらと同じにする必要はありませんが、ビューやJavaScriptアクションのエントリーポイントが明確になるようにしてください。
+>
+> ```
+> project/
+> ├── actions/
+> │   └── js/
+> |       └── sampleAction.js
+> └── views/
+>     ├── components/
+>     │   └── SortableForm.tsx
+>     └── pages/
+>         ├── SortableFormPage.tsx
+>         └── paginatedTable/
+>             └── index.tsx
+> ```
+
 ## 機能
 
 - 解析対象（JSアクションかビューか）と対象ディレクトリを指定可能
