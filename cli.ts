@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { TargetType } from './analyze-action-dependencies';
-import { analyzeActionDependencies } from './index';
+import { analyzeActionDependencies, TargetType } from './analyze-action-dependencies';
+import { formatJavaScriptActionDependencyAnalysisResult, formatViewDependencyAnalysisResult } from './lib/result-formatter';
 
 // コマンドライン引数の解析
 const args = process.argv.slice(2);
@@ -50,6 +50,28 @@ for (let i = 2; i < args.length; i++) {
 
 // 解析の実行
 analyzeActionDependencies(targetType, targetDir, entryPointPatterns)
+    .then(result => {
+        // 結果をJSON文字列にフォーマット
+        let formattedResult: string;
+        if (targetType === 'action') {
+            formattedResult = formatJavaScriptActionDependencyAnalysisResult(
+                // 古い形式に変換
+                result.reduce((acc, item: any) => {
+                    acc[item.entrypoint] = item.dependencies;
+                    return acc;
+                }, {} as Record<string, string[]>)
+            );
+        } else {
+            formattedResult = formatViewDependencyAnalysisResult(
+                // 古い形式に変換
+                result.reduce((acc, item: any) => {
+                    acc[item.entrypoint] = item.dependencies;
+                    return acc;
+                }, {} as Record<string, { direct: string[], indirect: Record<string, string[]> }>)
+            );
+        }
+        console.log(formattedResult);
+    })
     .catch(error => {
         console.error('エラーが発生しました:', error);
         process.exit(1);
