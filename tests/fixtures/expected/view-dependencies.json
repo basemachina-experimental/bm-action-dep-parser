@@ -1,0 +1,23 @@
+[
+    {
+        "entrypoint": "pages/SortableFormPage.tsx",
+        "dependencies": {
+            "direct": [],
+            "indirect": {
+                "components/SortableForm.tsx": [
+                    "get-products",
+                    "update-category"
+                ]
+            }
+        }
+    },
+    {
+        "entrypoint": "pages/paginatedTable/index.tsx",
+        "dependencies": {
+            "direct": [
+                "get-users"
+            ],
+            "indirect": {}
+        }
+    }
+]

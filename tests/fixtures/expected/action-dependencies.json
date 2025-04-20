@@ -1,0 +1,9 @@
+[
+    {
+        "entrypoint": "sampleAction.js",
+        "dependencies": [
+            "bm-onboarding-list-users",
+            "bm-onboarding-get-user"
+        ]
+    }
+]

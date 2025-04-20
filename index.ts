@@ -1,10 +1,10 @@
 import { findFiles } from './lib/file-finder';
 import { analyzeFile } from './lib/code-analyzer';
 import { extractDependencies } from './lib/dependency-extractor';
-import { formatResults } from './lib/result-formatter';
+import { formatJavaScriptActionDependencyAnalysisResult, formatViewDependencyAnalysisResult } from './lib/result-formatter';
 import { ViewDependencyGraph } from './lib/dependency-graph-builder';
-import { analyzeEntryPoints, formatEntryPointResults } from './lib/entry-point-analyzer';
-import { TargetType } from './analyze-action-dependencies';
+import { analyzeEntryPoints } from './lib/entry-point-analyzer';
+import { TargetType, JavaScriptActionDependency, ViewDependency } from './analyze-action-dependencies';
 
 /**
  * アクション依存関係を解析する関数
@@ -36,7 +36,7 @@ export async function analyzeActionDependencies(
   // アクションの場合
   if (targetType === 'action') {
     // JSON形式の結果のみを返す
-    return formatResults(dependencies);
+    return formatJavaScriptActionDependencyAnalysisResult(dependencies);
   }
   
   // ビューの場合
@@ -51,7 +51,7 @@ export async function analyzeActionDependencies(
     const entryPointDependencies = await analyzeEntryPoints(targetDir, dependencyGraph, entryPointPatterns);
     
     // JSON形式の結果のみを返す
-    return formatEntryPointResults(entryPointDependencies);
+    return formatViewDependencyAnalysisResult(entryPointDependencies);
   }
 
   // どちらでもない場合（通常はここには到達しない）
@@ -63,8 +63,14 @@ export {
   findFiles,
   analyzeFile,
   extractDependencies,
-  formatResults,
+  formatJavaScriptActionDependencyAnalysisResult,
   ViewDependencyGraph,
   analyzeEntryPoints,
-  formatEntryPointResults
+  formatViewDependencyAnalysisResult
+};
+
+// 型のエクスポート
+export type {
+  JavaScriptActionDependency,
+  ViewDependency
 };

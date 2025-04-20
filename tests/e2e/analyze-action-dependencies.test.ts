@@ -1,5 +1,6 @@
-import { analyzeActionDependencies, TargetType } from '../../analyze-action-dependencies';
+import { analyzeActionDependencies, TargetType, JavaScriptActionDependency, ViewDependency } from '../../analyze-action-dependencies';
 import * as path from 'path';
+import * as fs from 'fs';
 
 describe('Action dependencies analysis', () => {
   it('should correctly analyze action dependencies', async () => {
@@ -9,14 +10,12 @@ describe('Action dependencies analysis', () => {
       path.resolve(__dirname, '../../tests/fixtures/actions')
     );
     
-    // 期待される結果
-    const expected = {
-      [path.resolve(__dirname, '../../tests/fixtures/actions/sampleAction.js')]: [
-        "bm-onboarding-list-users",
-        "bm-onboarding-get-user"
-      ]
-    };
+    // 期待される結果をJSONファイルから読み込む
+    const expectedPath = path.resolve(__dirname, '../../tests/fixtures/expected/action-dependencies.json');
+    const expectedJson = fs.readFileSync(expectedPath, 'utf-8');
+    const expected = JSON.parse(expectedJson) as JavaScriptActionDependency[];
     
+    // テスト用に相対パスのままで比較
     expect(result).toEqual(expected);
   });
 
@@ -47,22 +46,12 @@ describe('View dependencies analysis', () => {
     // 結果をコンソールに出力して確認
     console.log('View dependencies result:', JSON.stringify(result, null, 2));
     
-    // 期待される結果の構造を確認
-    expect(Object.keys(result)).toContain('pages/SortableFormPage.tsx');
-    expect(Object.keys(result)).toContain('pages/paginatedTable/index.tsx');
+    // 期待される結果をJSONファイルから読み込む
+    const expectedPath = path.resolve(__dirname, '../../tests/fixtures/expected/view-dependencies.json');
+    const expectedJson = fs.readFileSync(expectedPath, 'utf-8');
+    const expected = JSON.parse(expectedJson) as ViewDependency[];
     
-    // SortableFormPageの依存関係を確認
-    const sortableFormPage = result['pages/SortableFormPage.tsx'];
-    expect(sortableFormPage).toHaveProperty('direct');
-    expect(sortableFormPage).toHaveProperty('indirect');
-    expect(Object.keys(sortableFormPage.indirect)).toContain('components/SortableForm.tsx');
-    expect(sortableFormPage.indirect['components/SortableForm.tsx']).toContain('get-products');
-    expect(sortableFormPage.indirect['components/SortableForm.tsx']).toContain('update-category');
-    
-    // PaginatedTableの依存関係を確認
-    const paginatedTable = result['pages/paginatedTable/index.tsx'];
-    expect(paginatedTable).toHaveProperty('direct');
-    expect(paginatedTable.direct).toContain('get-users');
+    expect(result).toEqual(expected);
   });
 
   it('should handle empty directory', async () => {
@@ -78,8 +67,8 @@ describe('View dependencies analysis', () => {
       
       const result = await analyzeActionDependencies('view', tempDir);
       
-      // 空のオブジェクトが返されることを期待
-      expect(Object.keys(result)).toHaveLength(0);
+      // 空の配列が返されることを期待
+      expect(result).toEqual([]);
     } finally {
       // テスト後にディレクトリを削除
       const fs = require('fs');

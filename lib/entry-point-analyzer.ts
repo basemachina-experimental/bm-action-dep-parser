@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { glob } from 'glob';
 import { ViewDependencyGraph } from './dependency-graph-builder';
+import { ViewDependency } from '../analyze-action-dependencies';
 
 export const defaultEntryPointPatterns = ["pages/**/*.{tsx,jsx,ts,js}"];
 
@@ -89,18 +90,4 @@ export async function analyzeEntryPoints(
   }
   
   return result;
-}
-
-/**
- * エントリーポイント分析結果をJSON形式でフォーマット
- * @param entryPointDependencies エントリーポイントごとの依存関係
- * @returns JSON形式でフォーマットされた結果
- */
-export function formatEntryPointResults(
-  entryPointDependencies: Record<string, {
-    direct: string[];
-    indirect: Record<string, string[]>;
-  }>
-): string {
-  return JSON.stringify(entryPointDependencies, null, 2);
 }
