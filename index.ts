@@ -4,19 +4,18 @@ import { extractDependencies } from './lib/dependency-extractor';
 import { formatResults } from './lib/result-formatter';
 import { DependencyGraph } from './lib/dependency-graph-builder';
 import { analyzeEntryPoints, formatEntryPointResults } from './lib/entry-point-analyzer';
+import { TargetType } from './analyze-action-dependencies';
 
 /**
  * アクション依存関係を解析する関数
  * @param targetType 解析対象のタイプ ('action' または 'view')
  * @param targetDir 対象ディレクトリ
- * @param format 出力形式 ('text' または 'json')
  * @param entryPointPatterns エントリーポイントのパターン（ビューの場合のみ使用）
  * @returns 解析結果
  */
 export async function analyzeActionDependencies(
-  targetType: 'action' | 'view',
+  targetType: TargetType,
   targetDir: string,
-  format: 'text' | 'json' = 'json', // デフォルト値をjsonに変更
   entryPointPatterns: string[] = ["pages/**/*.{tsx,jsx,ts,js}"]
 ): Promise<string> {
   // ファイル検索
@@ -26,7 +25,7 @@ export async function analyzeActionDependencies(
   const dependencies: Record<string, string[]> = {};
   for (const file of files) {
     try {
-      const ast = await analyzeFile(file, targetType);
+      const ast = await analyzeFile(file);
       const fileDependencies = extractDependencies(ast, targetType);
       dependencies[file] = fileDependencies;
     } catch (error) {

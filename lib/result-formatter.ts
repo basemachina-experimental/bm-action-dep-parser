@@ -1,12 +1,6 @@
 import path from 'path';
 
 /**
- * 依存関係の解析結果をフォーマットする
- * @param dependencies ファイルパスとそれが依存するアクションのマップ
- * @param format 出力形式 ('text' または 'json')
- * @returns フォーマットされた結果
- */
-/**
  * 依存関係の解析結果をJSON形式でフォーマットする
  * @param dependencies ファイルパスとそれが依存するアクションのマップ
  * @returns JSON形式でフォーマットされた結果

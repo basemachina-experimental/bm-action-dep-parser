@@ -1,5 +1,6 @@
 import { glob } from 'glob';
 import path from 'path';
+import { TargetType } from '../analyze-action-dependencies';
 
 /**
  * 指定されたディレクトリ内のファイルを検索する
@@ -7,7 +8,7 @@ import path from 'path';
  * @param targetType 解析対象のタイプ ('action' または 'view')
  * @returns ファイルパスの配列
  */
-export async function findFiles(directory: string, targetType: 'action' | 'view'): Promise<string[]> {
+export async function findFiles(directory: string, targetType: TargetType): Promise<string[]> {
   const patterns = [];
   
   if (targetType === 'action') {
@@ -22,10 +23,5 @@ export async function findFiles(directory: string, targetType: 'action' | 'view'
     files.push(...matches);
   }
 
-  // node_modules や dist ディレクトリを除外
-  return files.filter(file => 
-    !file.includes('node_modules') && 
-    !file.includes('dist') &&
-    !file.includes('.d.ts')
-  );
+  return files
 }

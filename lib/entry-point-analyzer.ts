@@ -2,13 +2,15 @@ import * as path from 'path';
 import { glob } from 'glob';
 import { DependencyGraph } from './dependency-graph-builder';
 
+export const defaultEntryPointPatterns = ["pages/**/*.{tsx,jsx,ts,js}"];
+
 /**
  * 指定されたパターンに一致するファイルをエントリーポイントとして特定
  * @param viewsDir ビューのディレクトリパス
  * @param entryPointPatterns エントリーポイントのパターン
  * @returns エントリーポイントのファイルパスの配列
  */
-export async function findEntryPoints(viewsDir: string, entryPointPatterns: string[] = ["pages/**/*.{tsx,jsx,ts,js}"]): Promise<string[]> {
+export async function findEntryPoints(viewsDir: string, entryPointPatterns: string[] = defaultEntryPointPatterns): Promise<string[]> {
   const files: string[] = [];
   
   // 各パターンに一致するファイルを検索
@@ -52,7 +54,7 @@ export async function findEntryPoints(viewsDir: string, entryPointPatterns: stri
 export async function analyzeEntryPoints(
   viewsDir: string,
   dependencyGraph: DependencyGraph,
-  entryPointPatterns: string[] = ["pages/**/*.{tsx,jsx,ts,js}"]
+  entryPointPatterns: string[] = defaultEntryPointPatterns
 ): Promise<Record<string, {
   direct: string[];
   indirect: Record<string, string[]>;
@@ -89,11 +91,6 @@ export async function analyzeEntryPoints(
   return result;
 }
 
-/**
- * エントリーポイント分析結果をテキスト形式でフォーマット
- * @param entryPointDependencies エントリーポイントごとの依存関係
- * @returns テキスト形式でフォーマットされた結果
- */
 /**
  * エントリーポイント分析結果をJSON形式でフォーマット
  * @param entryPointDependencies エントリーポイントごとの依存関係

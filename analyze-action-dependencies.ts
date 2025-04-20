@@ -3,7 +3,9 @@ import { analyzeFile } from './lib/code-analyzer';
 import { extractDependencies } from './lib/dependency-extractor';
 import { formatResults } from './lib/result-formatter';
 import { DependencyGraph } from './lib/dependency-graph-builder';
-import { analyzeEntryPoints, formatEntryPointResults } from './lib/entry-point-analyzer';
+import { analyzeEntryPoints, defaultEntryPointPatterns, formatEntryPointResults } from './lib/entry-point-analyzer';
+
+export type TargetType = 'action' | 'view';
 
 /**
  * アクション依存関係解析ツールのメイン関数
@@ -12,12 +14,12 @@ async function main() {
   try {
     // コマンドライン引数の解析
     const args = process.argv.slice(2);
-    const targetType = args[0] as 'action' | 'view'; // 'action' または 'view'
+    const targetType = args[0] as TargetType;
     const targetDir = args[1]; // 対象ディレクトリ
     
     // 出力形式とオプションの解析
     // ビューの場合は常にエントリー分析モードにする
-    let entryPointPatterns: string[] = ["pages/**/*.{tsx,jsx,ts,js}"];
+    let entryPointPatterns: string[] = defaultEntryPointPatterns;
     
     for (let i = 2; i < args.length; i++) {
       const arg = args[i];
@@ -51,7 +53,7 @@ async function main() {
     const dependencies: Record<string, string[]> = {};
     for (const file of files) {
       try {
-        const ast = await analyzeFile(file, targetType);
+        const ast = await analyzeFile(file);
         const fileDependencies = extractDependencies(ast, targetType);
         dependencies[file] = fileDependencies;
       } catch (error) {

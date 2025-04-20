@@ -4,10 +4,9 @@ import fs from 'fs/promises';
 /**
  * ファイルを解析してASTを生成する
  * @param filePath 解析対象のファイルパス
- * @param targetType 解析対象のタイプ ('action' または 'view')
  * @returns TypeScriptのソースファイル（AST）
  */
-export async function analyzeFile(filePath: string, targetType: 'action' | 'view') {
+export async function analyzeFile(filePath: string) {
   try {
     const content = await fs.readFile(filePath, 'utf-8');
     

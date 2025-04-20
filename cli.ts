@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { TargetType } from './analyze-action-dependencies';
 import { analyzeActionDependencies } from './index';
 
 // コマンドライン引数の解析
@@ -26,7 +27,7 @@ bm-action-dep-parser - BaseMachina アクション依存関係解析ツール
 }
 
 // 引数の検証
-const targetType = args[0] as 'action' | 'view';
+const targetType = args[0] as TargetType;
 const targetDir = args[1];
 
 if (!targetType || !targetDir) {
@@ -37,8 +38,6 @@ if (!targetType || !targetDir) {
 }
 
 // オプションの解析
-// 常にJSON形式で出力
-const format: 'json' = 'json';
 let entryPointPatterns: string[] = ["pages/**/*.{tsx,jsx,ts,js}"];
 
 for (let i = 2; i < args.length; i++) {
@@ -50,7 +49,7 @@ for (let i = 2; i < args.length; i++) {
 }
 
 // 解析の実行
-analyzeActionDependencies(targetType, targetDir, format, entryPointPatterns)
+analyzeActionDependencies(targetType, targetDir, entryPointPatterns)
     .catch(error => {
         console.error('エラーが発生しました:', error);
         process.exit(1);
