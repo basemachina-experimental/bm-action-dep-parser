@@ -2,9 +2,6 @@
 
 BaseMachina アクション依存関係解析ツール
 
-[![npm version](https://img.shields.io/npm/v/bm-action-dep-parser.svg)](https://www.npmjs.com/package/bm-action-dep-parser)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 ## 概要
 
 このツールは、BaseMachinaのJavaScriptアクションとビューのコードを静的解析して、各ファイルがどのアクションに依存しているかを特定します。
