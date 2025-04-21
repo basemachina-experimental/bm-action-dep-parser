@@ -19,6 +19,10 @@ export default async (
   // executeActionの実行中にエラーが発生した場合は、failureにエラーの値が入ります
   if (getFirstUserResults[0].failure) {
     // Errorをthrowすると、実行結果にエラーメッセージを表示できます
+    await executeAction("post-to-slack", {
+      channel: "#test",
+      text: `ユーザーの詳細取得に失敗しました: ${getFirstUserResults[0].failure.message}`,
+    });
     throw new Error(
       `ユーザーの詳細取得に失敗しました: ${getFirstUserResults[0].failure.message}`,
     );

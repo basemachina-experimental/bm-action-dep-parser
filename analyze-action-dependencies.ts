@@ -4,6 +4,7 @@ import { analyzeFile } from './lib/code-analyzer';
 import { extractDependencies } from './lib/dependency-extractor';
 import { formatJavaScriptActionDependencyAnalysisResult, formatViewDependencyAnalysisResult } from './lib/result-formatter';
 import { ViewDependencyGraph } from './lib/dependency-graph-builder';
+import { ActionDependencyGraph } from './lib/action-dependency-graph-builder';
 import { analyzeEntryPoints, defaultEntryPointPatterns } from './lib/entry-point-analyzer';
 
 export type TargetType = 'action' | 'view';
@@ -13,7 +14,10 @@ export type TargetType = 'action' | 'view';
  */
 export interface JavaScriptActionDependency {
   entrypoint: string;
-  dependencies: string[];
+  dependencies: {
+    direct: string[];
+    indirect: Record<string, string[]>;
+  };
 }
 
 /**
@@ -58,21 +62,40 @@ export async function analyzeActionDependencies(
 
     // アクションの場合
     if (targetType === 'action') {
-      // 新しい形式に変換
+      // 依存関係グラフの構築
+      const dependencyGraph = new ActionDependencyGraph(targetDir);
+      for (const file of files) {
+        await dependencyGraph.addFile(file);
+      }
+      
+      // 依存関係グラフを構築
+      dependencyGraph.buildDependencyGraph();
+      
+      // 各ファイルの依存関係を解析
       const result: JavaScriptActionDependency[] = [];
       
-      for (const [file, deps] of Object.entries(dependencies)) {
-        if (deps.length === 0) {
-          continue;
+      for (const file of files) {
+        // 依存関係を取得
+        const dependencies = dependencyGraph.getReachableActionDependencies(file);
+        
+        // 依存関係がある場合のみ結果に追加
+        if (dependencies.direct.length > 0 || dependencies.indirect.size > 0) {
+          // コマンドで指定したディレクトリからの相対パスに変換
+          const relativePath = path.relative(targetDir, file);
+          
+          result.push({
+            entrypoint: relativePath,
+            dependencies: {
+              direct: dependencies.direct,
+              indirect: Object.fromEntries(
+                Array.from(dependencies.indirect.entries()).map(([key, value]) => [
+                  path.relative(targetDir, key),
+                  value
+                ])
+              )
+            }
+          });
         }
-        
-        // コマンドで指定したディレクトリからの相対パスに変換
-        const relativePath = path.relative(targetDir, file);
-        
-        result.push({
-          entrypoint: relativePath,
-          dependencies: deps
-        });
       }
       
       return result;

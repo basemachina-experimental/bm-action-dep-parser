@@ -1,9 +1,28 @@
 [
     {
         "entrypoint": "sampleAction.js",
-        "dependencies": [
-            "bm-onboarding-list-users",
-            "bm-onboarding-get-user"
-        ]
+        "dependencies": {
+            "direct": [
+                "bm-onboarding-list-users",
+                "bm-onboarding-get-user",
+                "post-to-slack"
+            ],
+            "indirect": {
+                "post-to-slack.js": [
+                    "lookup-slack-user-by-email",
+                    "post-slack-message"
+                ]
+            }
+        }
+    },
+    {
+        "entrypoint": "post-to-slack.js",
+        "dependencies": {
+            "direct": [
+                "lookup-slack-user-by-email",
+                "post-slack-message"
+            ],
+            "indirect": {}
+        }
     }
 ]

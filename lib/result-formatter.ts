@@ -19,7 +19,10 @@ export function formatJavaScriptActionDependencyAnalysisResult(
     const relativePath = path.relative(process.cwd(), file);
     result.push({
       entrypoint: relativePath,
-      dependencies: deps
+      dependencies: {
+        direct: deps,
+        indirect: {}
+      }
     });
   }
   
