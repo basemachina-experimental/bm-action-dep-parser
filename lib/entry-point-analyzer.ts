@@ -1,7 +1,6 @@
 import * as path from 'path';
 import { glob } from 'glob';
 import { ViewDependencyGraph } from './dependency-graph-builder';
-import { ViewDependency } from '../analyze-action-dependencies';
 
 export const defaultEntryPointPatterns = ["pages/**/*.{tsx,jsx,ts,js}"];
 
