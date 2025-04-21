@@ -38,28 +38,28 @@ BaseMachina アクション依存関係解析ツール
 ### CLIツールとして使用
 
 ```bash
-npx bm-action-dep-parser action ./packages/actions/js
-npx bm-action-dep-parser view ./packages/views
+npx @basemachina/bm-action-dep-parser action ./packages/actions/js
+npx @basemachina/bm-action-dep-parser view ./packages/views
 ```
 
 ### オプション
 
 ```bash
 # 出力形式を指定（text または json）
-npx bm-action-dep-parser action ./packages/actions/js --format json
+npx @basemachina/bm-action-dep-parser action ./packages/actions/js --format json
 
 # カスタムエントリーポイントパターンを指定（ビューの場合のみ）
-npx bm-action-dep-parser view ./packages/views --entry-point-patterns "**/*.tsx"
+npx @basemachina/bm-action-dep-parser view ./packages/views --entry-point-patterns "**/*.tsx"
 
 # ヘルプを表示
-npx bm-action-dep-parser --help
+npx @basemachina/bm-action-dep-parser --help
 ```
 
 ### ローカルでの実行
 
 ```bash
-npx ts-node analyze-action-dependencies.ts action ./packages/actions/js
-npx ts-node analyze-action-dependencies.ts view ./packages/views
+pnpm run analyze action ./packages/actions/js
+pnpm run analyze view ./packages/views
 ```
 
 ## 技術詳細
