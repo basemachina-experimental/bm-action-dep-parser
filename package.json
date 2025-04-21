@@ -1,5 +1,5 @@
 {
-    "name": "bm-action-dep-parser",
+    "name": "@basemachina/bm-action-dep-parser",
     "version": "0.0.1",
     "description": "BaseMachina アクション依存関係解析ツール",
     "main": "dist/index.js",
