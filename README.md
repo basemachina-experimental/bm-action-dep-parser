@@ -33,6 +33,35 @@ BaseMachina アクション依存関係解析ツール
 - **ビューのエントリーポイント分析**: ビューのエントリーポイントから直接・間接的に依存しているすべてのアクションを可視化（ビューは常にエントリーポイント分析モード）
 - **カスタムエントリーポイントパターン**: エントリーポイントを柔軟に指定可能（デフォルトは `pages/**/*.{tsx,jsx,ts,js}`）
 
+### 出力例
+
+```
+ npx @basemachina/bm-action-dep-parser view ./bm-action-dep-parser/tests/fixtures/views 
+[
+  {
+    "entrypoint": "pages/SortableFormPage.tsx",
+    "dependencies": {
+      "direct": [],
+      "indirect": {
+        "components/SortableForm.tsx": [
+          "get-products",
+          "update-category"
+        ]
+      }
+    }
+  },
+  {
+    "entrypoint": "pages/paginatedTable/index.tsx",
+    "dependencies": {
+      "direct": [
+        "get-users"
+      ],
+      "indirect": {}
+    }
+  }
+]
+```
+
 ## 使用方法
 
 ### CLIツールとして使用
