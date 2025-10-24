@@ -16,8 +16,9 @@ bm-action-dep-parser - BaseMachina アクション依存関係解析ツール
   bm-action-dep-parser <action|view> <directory> [options]
 
 オプション:
-  --entry-point-patterns <patterns> エントリーポイントのパターンをカンマ区切りで指定 (デフォルト: pages/**/*.{tsx,jsx,ts,js})
-  --help, -h                      ヘルプメッセージを表示
+  --entry-point-patterns <patterns> エントリーポイントのパターンをカンマ区切りで指定
+                                    (デフォルト: "pages/**/*.{tsx,jsx,ts,js},*.{tsx,jsx,ts,js}")
+  --help, -h                        ヘルプメッセージを表示
 
 例:
   bm-action-dep-parser action ./packages/actions/js

@@ -31,7 +31,7 @@ BaseMachina アクション依存関係解析ツール
 - 変数に格納されたアクション識別子も検出
 - JSON形式で結果を出力
 - **ビューのエントリーポイント分析**: ビューのエントリーポイントから直接・間接的に依存しているすべてのアクションを可視化（ビューは常にエントリーポイント分析モード）
-- **カスタムエントリーポイントパターン**: エントリーポイントを柔軟に指定可能（デフォルトは `pages/**/*.{tsx,jsx,ts,js}`）
+- **カスタムエントリーポイントパターン**: エントリーポイントを柔軟に指定可能（デフォルトは `pages/**/*.{tsx,jsx,ts,js}` と `*.{tsx,jsx,ts,js}` で、ネスト構造とフラット構造の両方に対応）
 
 ### 出力例
 
@@ -74,9 +74,6 @@ npx @basemachina/bm-action-dep-parser view ./packages/views
 ### オプション
 
 ```bash
-# 出力形式を指定（text または json）
-npx @basemachina/bm-action-dep-parser action ./packages/actions/js --format json
-
 # カスタムエントリーポイントパターンを指定（ビューの場合のみ）
 npx @basemachina/bm-action-dep-parser view ./packages/views --entry-point-patterns "**/*.tsx"
 
@@ -97,11 +94,13 @@ pnpm run analyze view ./packages/views
 
 1. **index.ts**: メインエントリーポイント
 2. **cli.ts**: コマンドラインインターフェース
-3. **lib/file-finder.ts**: ファイル検索モジュール
-4. **lib/code-analyzer.ts**: コード解析モジュール
-5. **lib/dependency-extractor.ts**: 依存関係抽出モジュール
-6. **lib/result-formatter.ts**: 結果出力モジュール
-7. **lib/dependency-graph-builder.ts**: 依存関係グラフ構築モジュール
-8. **lib/entry-point-analyzer.ts**: エントリーポイント解析モジュール
+3. **analyze-action-dependencies.ts**: メイン解析ロジック
+4. **lib/file-finder.ts**: ファイル検索モジュール
+5. **lib/code-analyzer.ts**: コード解析モジュール（TypeScript Compiler API使用）
+6. **lib/dependency-extractor.ts**: 依存関係抽出モジュール
+7. **lib/result-formatter.ts**: 結果出力モジュール（JSON形式）
+8. **lib/dependency-graph-builder.ts**: ビュー依存関係グラフ構築モジュール
+9. **lib/action-dependency-graph-builder.ts**: アクション依存関係グラフ構築モジュール
+10. **lib/entry-point-analyzer.ts**: エントリーポイント解析モジュール
 
-TypeScriptのコンパイラAPIを使用してコードを解析し、アクション呼び出しを検出しています。エントリーポイント分析モードでは、ファイル間の依存関係も解析して、間接的なアクション依存関係も検出します。
+TypeScriptのコンパイラAPIを使用してコードを解析し、アクション呼び出しを検出しています。エントリーポイント分析では、ファイル間の依存関係も解析して、間接的なアクション依存関係も検出します。
