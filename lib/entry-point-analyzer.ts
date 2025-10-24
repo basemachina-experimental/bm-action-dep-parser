@@ -2,7 +2,10 @@ import * as path from 'path';
 import { glob } from 'glob';
 import { ViewDependencyGraph } from './dependency-graph-builder';
 
-export const defaultEntryPointPatterns = ["pages/**/*.{tsx,jsx,ts,js}"];
+export const defaultEntryPointPatterns = [
+  "pages/**/*.{tsx,jsx,ts,js}",  // Next.js風の構造
+  "*.{tsx,jsx,ts,js}"             // フラットな構造（ルート直下のファイル）
+];
 
 /**
  * 指定されたパターンに一致するファイルをエントリーポイントとして特定
@@ -12,7 +15,7 @@ export const defaultEntryPointPatterns = ["pages/**/*.{tsx,jsx,ts,js}"];
  */
 export async function findEntryPoints(viewsDir: string, entryPointPatterns: string[] = defaultEntryPointPatterns): Promise<string[]> {
   const files: string[] = [];
-  
+
   // 各パターンに一致するファイルを検索
   for (const pattern of entryPointPatterns) {
     const patternPath = path.join(viewsDir, pattern);
@@ -32,7 +35,7 @@ export async function findEntryPoints(viewsDir: string, entryPointPatterns: stri
     dirToFiles.get(dir)!.push(file);
   }
   
-  for (const [dir, dirFiles] of dirToFiles.entries()) {
+  for (const [_dir, dirFiles] of dirToFiles.entries()) {
     const indexFile = dirFiles.find(file => path.basename(file).startsWith('index.'));
     if (indexFile) {
       entryPoints.push(indexFile);

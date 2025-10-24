@@ -57,16 +57,16 @@ describe('View dependencies analysis', () => {
   it('should handle empty directory', async () => {
     // 一時的な空ディレクトリを作成してテスト
     const tempDir = path.resolve(__dirname, '../fixtures/temp-empty-dir');
-    
+
     try {
       // ディレクトリが存在しない場合は作成
       const fs = require('fs');
       if (!fs.existsSync(tempDir)) {
         fs.mkdirSync(tempDir, { recursive: true });
       }
-      
+
       const result = await analyzeActionDependencies('view', tempDir);
-      
+
       // 空の配列が返されることを期待
       expect(result).toEqual([]);
     } finally {
@@ -76,6 +76,30 @@ describe('View dependencies analysis', () => {
         fs.rmSync(tempDir, { recursive: true, force: true });
       }
     }
+  });
+
+  it('should correctly analyze flat structure view dependencies', async () => {
+    // フラット構造のビューを解析
+    const result = await analyzeActionDependencies(
+      'view',
+      path.resolve(__dirname, '../fixtures/views-flat')
+    );
+
+    // 結果を検証
+    expect(result).toHaveLength(2);
+
+    // Dashboard.tsxの依存関係を確認
+    const dashboard = result.find(r => r.entrypoint === 'Dashboard.tsx');
+    expect(dashboard).toBeDefined();
+    expect(dashboard?.dependencies.direct).toContain('get-dashboard-stats');
+    expect(dashboard?.dependencies.direct).toContain('get-recent-activity');
+    expect(dashboard?.dependencies.direct).toHaveLength(2);
+
+    // Settings.tsxの依存関係を確認
+    const settings = result.find(r => r.entrypoint === 'Settings.tsx');
+    expect(settings).toBeDefined();
+    expect(settings?.dependencies.direct).toContain('update-user-settings');
+    expect(settings?.dependencies.direct).toHaveLength(1);
   });
 });
 

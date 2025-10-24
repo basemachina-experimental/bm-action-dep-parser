@@ -2,6 +2,7 @@
 
 import { analyzeActionDependencies, TargetType } from './analyze-action-dependencies';
 import { formatJavaScriptActionDependencyAnalysisResult, formatViewDependencyAnalysisResult } from './lib/result-formatter';
+import { defaultEntryPointPatterns } from './lib/entry-point-analyzer';
 
 // コマンドライン引数の解析
 const args = process.argv.slice(2);
@@ -38,7 +39,7 @@ if (!targetType || !targetDir) {
 }
 
 // オプションの解析
-let entryPointPatterns: string[] = ["pages/**/*.{tsx,jsx,ts,js}"];
+let entryPointPatterns: string[] = defaultEntryPointPatterns;
 
 for (let i = 2; i < args.length; i++) {
     const arg = args[i];
