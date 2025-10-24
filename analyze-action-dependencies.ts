@@ -6,6 +6,7 @@ import { formatJavaScriptActionDependencyAnalysisResult, formatViewDependencyAna
 import { ViewDependencyGraph } from './lib/dependency-graph-builder';
 import { ActionDependencyGraph } from './lib/action-dependency-graph-builder';
 import { analyzeEntryPoints, defaultEntryPointPatterns } from './lib/entry-point-analyzer';
+import { filterViewDependencies, filterActionDependencies } from './lib/dependency-filter';
 
 export type TargetType = 'action' | 'view';
 
@@ -36,12 +37,14 @@ export interface ViewDependency {
  * @param targetType 解析対象のタイプ ('action' または 'view')
  * @param targetDir 対象ディレクトリ
  * @param entryPointPatterns エントリーポイントのパターン（viewの場合のみ使用）
+ * @param filterActionIdentifiers フィルタリングするアクション識別子（オプショナル）
  * @returns 解析結果のオブジェクト
  */
 export async function analyzeActionDependencies(
   targetType: TargetType,
   targetDir: string,
-  entryPointPatterns: string[] = defaultEntryPointPatterns
+  entryPointPatterns: string[] = defaultEntryPointPatterns,
+  filterActionIdentifiers?: string[]
 ): Promise<JavaScriptActionDependency[] | ViewDependency[]> {
   try {
     // ファイル検索
@@ -72,17 +75,17 @@ export async function analyzeActionDependencies(
       dependencyGraph.buildDependencyGraph();
       
       // 各ファイルの依存関係を解析
-      const result: JavaScriptActionDependency[] = [];
-      
+      let result: JavaScriptActionDependency[] = [];
+
       for (const file of files) {
         // 依存関係を取得
         const dependencies = dependencyGraph.getReachableActionDependencies(file);
-        
+
         // 依存関係がある場合のみ結果に追加
         if (dependencies.direct.length > 0 || dependencies.indirect.size > 0) {
           // コマンドで指定したディレクトリからの相対パスに変換
           const relativePath = path.relative(targetDir, file);
-          
+
           result.push({
             entrypoint: relativePath,
             dependencies: {
@@ -97,7 +100,19 @@ export async function analyzeActionDependencies(
           });
         }
       }
-      
+
+      // フィルタリングを適用
+      if (filterActionIdentifiers && filterActionIdentifiers.length > 0) {
+        const filterResult = filterActionDependencies(result, filterActionIdentifiers);
+
+        // 警告メッセージを標準エラー出力に表示
+        for (const warning of filterResult.warnings) {
+          console.error(warning);
+        }
+
+        result = filterResult.filtered;
+      }
+
       return result;
     }
     
@@ -111,17 +126,29 @@ export async function analyzeActionDependencies(
       
       // エントリーポイントからの依存関係を解析
       const entryPointDependencies = await analyzeEntryPoints(targetDir, dependencyGraph, entryPointPatterns);
-      
+
       // 新しい形式に変換
-      const result: ViewDependency[] = [];
-      
+      let result: ViewDependency[] = [];
+
       for (const [entryPoint, deps] of Object.entries(entryPointDependencies)) {
         result.push({
           entrypoint: entryPoint,
           dependencies: deps
         });
       }
-      
+
+      // フィルタリングを適用
+      if (filterActionIdentifiers && filterActionIdentifiers.length > 0) {
+        const filterResult = filterViewDependencies(result, filterActionIdentifiers);
+
+        // 警告メッセージを標準エラー出力に表示
+        for (const warning of filterResult.warnings) {
+          console.error(warning);
+        }
+
+        result = filterResult.filtered;
+      }
+
       return result;
     }
 

@@ -32,6 +32,7 @@ BaseMachina アクション依存関係解析ツール
 - JSON形式で結果を出力
 - **ビューのエントリーポイント分析**: ビューのエントリーポイントから直接・間接的に依存しているすべてのアクションを可視化（ビューは常にエントリーポイント分析モード）
 - **カスタムエントリーポイントパターン**: エントリーポイントを柔軟に指定可能（デフォルトは `pages/**/*.{tsx,jsx,ts,js}` と `*.{tsx,jsx,ts,js}` で、ネスト構造とフラット構造の両方に対応）
+- **アクション識別子によるフィルタリング**: 特定のアクションに依存するビューやアクションのみを抽出し、変更影響範囲の分析を効率化
 
 ### 出力例
 
@@ -77,8 +78,45 @@ npx @basemachina/bm-action-dep-parser view ./packages/views
 # カスタムエントリーポイントパターンを指定（ビューの場合のみ）
 npx @basemachina/bm-action-dep-parser view ./packages/views --entry-point-patterns "**/*.tsx"
 
+# 特定のアクションに依存するビューのみを抽出
+npx @basemachina/bm-action-dep-parser view ./packages/views --filter-action get-users
+
+# 複数のアクションでフィルタリング（OR論理）
+npx @basemachina/bm-action-dep-parser view ./packages/views --filter-action get-users,update-category
+
+# アクション解析でもフィルタリング可能
+npx @basemachina/bm-action-dep-parser action ./packages/actions/js --filter-action base-action
+
 # ヘルプを表示
 npx @basemachina/bm-action-dep-parser --help
+```
+
+### フィルタリング機能の使用例
+
+特定のアクションの変更影響範囲を分析する場合：
+
+```bash
+# get-usersアクションに依存するビューを特定
+npx @basemachina/bm-action-dep-parser view ./packages/views --filter-action get-users
+
+# 出力: get-usersを直接または間接的に使用するビューのみが表示される
+[
+  {
+    "entrypoint": "pages/UserListPage.tsx",
+    "dependencies": {
+      "direct": ["get-users"],
+      "indirect": {}
+    }
+  }
+]
+```
+
+存在しないアクション識別子を指定した場合、警告メッセージが標準エラー出力に表示されます：
+
+```
+Warning: Action identifier 'nonexistent-action' not found in dependency graph
+No dependencies found for the specified action identifier(s)
+[]
 ```
 
 ### ローカルでの実行
@@ -102,5 +140,6 @@ pnpm run analyze view ./packages/views
 8. **lib/dependency-graph-builder.ts**: ビュー依存関係グラフ構築モジュール
 9. **lib/action-dependency-graph-builder.ts**: アクション依存関係グラフ構築モジュール
 10. **lib/entry-point-analyzer.ts**: エントリーポイント解析モジュール
+11. **lib/dependency-filter.ts**: 依存関係フィルタリングモジュール（アクション識別子による逆引き検索）
 
 TypeScriptのコンパイラAPIを使用してコードを解析し、アクション呼び出しを検出しています。エントリーポイント分析では、ファイル間の依存関係も解析して、間接的なアクション依存関係も検出します。
